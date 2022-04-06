@@ -12,23 +12,27 @@ AWS_SECRET_KEY = os.getenv('SECRET_KEY')
 NASDAQ_APIKEY = os.getenv('NASDAQ_APIKEY')
 
 
-quandl.ApiConfig.api_key = NASDAQ_APIKEY
+quandl.ApiConfig.api_key = 'SY39_7QTBxtjE5topf6Q'
 codes = pd.read_csv('https://static.quandl.com/ECONOMIST_Descriptions/economist_country_codes.csv')
 
 
 
 codes_list = codes['COUNTRY|CODE'].tolist()
+codes_list.remove('Venezuela|VEN')
 
-
+values = []
 
 for country in codes_list:
     country_list = list(country[-3:])
     final_list = (''.join(country_list))
-    #print(final_list)
-    data = quandl.get('ECONOMIST/BIGMAC_' + str(final_list), start_date='2022-01-31', end_date='2022-01-31')
+    data = quandl.get('ECONOMIST/BIGMAC_' + str(final_list), start_date='2018-01-31', end_date='2018-01-31')
     df = pd.DataFrame(data).reset_index()
     final = df[df.columns[1:6]]
-    print(final)
+    values.append(final)
+
+large_df = pd.concat(values, ignore_index=True)
+large_df.insert(0, 'code', codes_list)
+print(large_df)
 
 
 
