@@ -18,20 +18,23 @@ codes = pd.read_csv('https://static.quandl.com/ECONOMIST_Descriptions/economist_
 
 
 codes_list = codes['COUNTRY|CODE'].tolist()
-codes_list.remove('Venezuela|VEN')
+#codes_list.remove('Venezuela|VEN')
 
 values = []
+codes = []
 
 for country in codes_list:
     country_list = list(country[-3:])
     final_list = (''.join(country_list))
-    data = quandl.get('ECONOMIST/BIGMAC_' + str(final_list), start_date='2018-01-31', end_date='2018-01-31')
+    data = quandl.get('ECONOMIST/BIGMAC_' + str(final_list), start_date='2022-01-31', end_date='2022-01-31')
+    if len(data) > 0:
+        codes.append(str(final_list))
     df = pd.DataFrame(data).reset_index()
     final = df[df.columns[1:6]]
     values.append(final)
 
 large_df = pd.concat(values, ignore_index=True)
-large_df.insert(0, 'code', codes_list)
+large_df.insert(0, 'code', codes)
 print(large_df)
 
 
